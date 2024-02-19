@@ -7,12 +7,13 @@
 enum class TokenType {
     _return,
     lit,
+    lit_int,
     semi
 };
 
 struct Token {
     TokenType type;
-    std::optional<std::string> value;
+    std::optional<std::string> value {};
 };
 
 std::vector<Token> tokenize(const std::string& str){
@@ -29,11 +30,19 @@ std::vector<Token> tokenize(const std::string& str){
                 ++i;
             }
             --i;
-
-        } else if (std::isspace(c)) {
-            tokens.push_back({.type = TokenType::lit, .value=buf});
-            std::cout << buf << std::endl;
+            tokens.push_back({.type = TokenType::lit, .value = buf});
             buf.clear();
+        } else if (std::isdigit(c)) {
+            buf.push_back(c);
+            ++i;
+            while(std::isdigit(str.at(i))) {
+                buf.push_back(str.at(i));
+                ++i;
+            }
+            --i;
+            tokens.push_back({.type = TokenType::lit_int, .value = buf});
+            buf.clear();
+        } else if (std::isspace(c)) {
             continue;
         }
     }   
@@ -57,6 +66,8 @@ int main(int argc, char* argv[]) {
 
 //    std::cout << content;
     std::vector<Token> tokens = tokenize(content);
-
+    for (const Token& token : tokens) {
+        std::cout << *token.value << std::endl;
+    }
     return EXIT_SUCCESS;
 }
