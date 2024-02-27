@@ -29,7 +29,18 @@ public:
                 while(peak().has_value() && std::isalnum(peak().value())) {
                     buffer.push_back(consume());
                 }
-                tokens.push_back({.type=TokenType::lit, .value=buffer});
+                tokens.push_back({.type = TokenType::lit, .value = buffer});
+                buffer.clear();
+            } else if(std::isdigit(peak().value())) {
+                buffer.push_back(consume());
+                while (peak().has_value() && std::isdigit(peak().value())) {
+                    buffer.push_back(consume());
+                }
+                tokens.push_back({.type = TokenType::lit_int, .value = buffer});
+                buffer.clear();
+            } else if(peak().value() == ';') {
+                buffer.push_back(consume());
+                tokens.push_back({.type = TokenType::semi, .value = buffer});
                 buffer.clear();
             } else if (std::isspace(peak().value())) {
                 consume();

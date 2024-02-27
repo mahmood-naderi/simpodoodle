@@ -3,8 +3,19 @@
 #include <sstream>
 #include <optional>
 #include <vector>
+#include <string_view>
 
 #include "./tokenization.hpp"
+
+std::string print(TokenType type) {
+    if (type == TokenType::lit) {
+        return "literal:)";
+    } else if (type == TokenType::semi) {
+        return "semi";
+    }
+
+    return "smth else:)";
+}
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
@@ -20,11 +31,10 @@ int main(int argc, char* argv[]) {
     input.close();
     std::string content = contentStream.str();
 
-//    std::cout << content;
     Tokenizer tokenizer(std::move(content));
     std::vector<Token> tokens = tokenizer.tokenize();
     for (const Token& token : tokens) {
-        std::cout << *token.value << std::endl;
+        std::cout << print(token.type) << std::endl;
     }
     return EXIT_SUCCESS;
 }
